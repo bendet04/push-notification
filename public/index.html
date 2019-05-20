@@ -1,0 +1,47 @@
+ <html>
+ <head>
+	<title> Chat with socket.io</title>
+	<style>
+		
+	</style>
+ </head>
+ <body>
+	<div id="devices"></div>
+	<form id="send-message">
+		<input size="35" id="message"></input>
+		<input type="submit"></input>
+	</form>
+	
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		jQuery(function($){
+			var socket = io.connect();
+			var messageFrom = $('#send-message');
+			var messageBox = $('#message');
+			var chat = $('#chat');
+
+			socket.emit('new device','console');
+			
+			messageFrom.submit(function(e){
+				e.preventDefault();
+				socket.emit('send message', messageBox.val());
+				messageBox.val('');
+			});
+			
+			socket.on('new message', function(data){
+				console.log(data+' test');
+				chat.append(data + "<br/>");
+			});
+
+			socket.on('data devices', function(data){
+				var devices = JSON.stringify(data);
+				console.log(devices['console']+' test');
+				for(i = 0; i <devices.length; i++){
+					//console.log(Object.keys(devices)+' test');
+				}
+			});
+		});
+	</script>
+ </body>
+ </html>
